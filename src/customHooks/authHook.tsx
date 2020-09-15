@@ -1,12 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-const Loading = () => {
-	return (
-		<div>
-			<h2>Loading....</h2>
-		</div>
-	);
-};
+const Loading = () => <h2>Loading....</h2>;
 
 const notAuthenticated = () => <h2>notAuthenticated....</h2>;
 
@@ -16,21 +10,27 @@ const decoded = (token: string) => {
 	else return { expired: true };
 };
 
-export const authHook = (component: JSX.Element) => {
+export const authHook = (component: React.FC) => {
 	// eslint-disable-next-line react-hooks/rules-of-hooks
-	const [compoenent, setComponent] = useState(Loading);
+	const [compoenent, setComponent] = useState<React.FC>(Loading);
 
-	const isAuthenticated = async () => {
-		const token: string | null = await localStorage.getItem("auth-token");
-
-		if (decoded(token as string).expired) {
-			setComponent(notAuthenticated);
-		} else {
-			setComponent(component);
-		}
+	const isAuthenticated = () => {
+		const token: string | null = localStorage.getItem("auth-token");
+		console.log("ff");
+		if (token) {
+			if (decoded(token as string).expired) {
+				setComponent(notAuthenticated);
+			} else {
+				setComponent(component);
+			}
+		} else setComponent(notAuthenticated);
 	};
 
-	isAuthenticated();
+	// eslint-disable-next-line react-hooks/rules-of-hooks
+	useEffect(() => {
+		isAuthenticated();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
-	return compoenent;
+	return [compoenent];
 };
