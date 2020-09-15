@@ -1,5 +1,5 @@
 import React, { ReactElement } from "react";
-import { UseInput } from "../customHooks/useInput";
+import { UseInput } from "../customHooks/useInputHook";
 
 export default function inputComponent(): ReactElement {
 	let [name, NameInput] = UseInput("string", "name", "John Doe");
